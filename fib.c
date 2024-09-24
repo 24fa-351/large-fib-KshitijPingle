@@ -7,6 +7,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//Function pointer
+typedef unsigned long long (*FibFuncPtr) (unsigned long long n);
+
+
 //Recursive Fibonacci Sequence
 unsigned long long fib_recurse(unsigned long long n) {
 
@@ -41,20 +45,11 @@ unsigned long long fib_iterate(unsigned long long n) {
 int main(unsigned long long argc, char *argv[]) {
 
    //Receive and process all passed arguments
-   unsigned long long num1 = atoi(argv[1]);
+   unsigned long long max = atoi(argv[1]);
 
    char fib_method = argv[2][0];           //"i" = iterative, "r" = recursive
 
-   unsigned long long num2 = 0;
-
-   FILE *file = fopen(argv[3], "r");       //"r" = read
-
-   fscanf(file, "%llu", &num2);            //Get single num from file
-   fclose(file);
-
-   unsigned long long max = num1 + num2;
-
-   unsigned long long fib_num = 0;
+   FibFuncPtr fib_routine;
 
    //Fibonnaci Sequence
       // 0 1 1 2 3 5 8 13 21 34 55 ...
@@ -62,18 +57,20 @@ int main(unsigned long long argc, char *argv[]) {
    switch (fib_method) {
       case 'i':
          //Call Iterative Fibonacci Function
-         fib_num = fib_iterate(max);
+         fib_routine = fib_iterate;
          break;
 
       case 'r':
          //Call Recursive Fibonacci Function
-         //fib_num = fib_recurse_provider(max - 1);
-         fib_num = fib_recurse(max - 1);
+         fib_routine = fib_recurse;
+         --max;
          break;
    
       default:
          break;
    }
+
+   unsigned long long fib_num = fib_routine(max);
 
    printf("%llu", fib_num);       //'llu' means unsigned long long
 
